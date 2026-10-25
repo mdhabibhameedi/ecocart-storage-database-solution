@@ -3,6 +3,15 @@
 **Cloud Computing | Modular Assignment 3**  
 **AWS Region:** Europe (Stockholm), `eu-north-1`
 
+## Quick links
+
+- [Architecture diagram](docs/EcoCart-M3-Architecture.png)
+- [Final assignment report](docs/Storage%20and%20Database%20Solution-M3-Report.docx)
+- [Evidence screenshots](docs/evidence/)
+- [Database schema](database/schema.sql)
+- [Python scripts](scripts/)
+- [Source datasets](data/)
+
 ## Project overview
 
 EcoCart is a cloud storage and relational database demonstration for an e-commerce product catalog. It uses **Amazon RDS for MySQL** to store structured product and customer records and **Amazon S3** to store product images and text descriptions. Python scripts demonstrate database ingestion and S3 object retrieval.
@@ -11,7 +20,9 @@ The deployment was created for academic assessment. It is not a production e-com
 
 ## Architecture
 
-![EcoCart storage and database architecture](docs/EcoCart-M3-Architecture.png)
+[![EcoCart storage and database architecture](docs/EcoCart-M3-Architecture.png)](docs/EcoCart-M3-Architecture.png)
+
+[Open the full-size architecture diagram](docs/EcoCart-M3-Architecture.png)
 
 The Python scripts access the RDS database through a TLS-encrypted MySQL connection using database credentials. A separate Python script uses **boto3** with AWS credentials available in AWS CloudShell to list and read objects in S3. The `products` table stores S3 object keys that associate each product with its image and description; RDS does not connect directly to S3.
 
@@ -29,7 +40,7 @@ The Python scripts access the RDS database through a TLS-encrypted MySQL connect
 | RDS backup | Automated backups enabled; 1-day retention; automated snapshot verified |
 | S3 protection | Block public access enabled; default SSE-S3 encryption |
 
-> **Deployment status:** The RDS instance was stopped after successful testing to pause instance-hour compute charges. A stopped RDS instance may restart automatically after seven days; storage and backup-related charges may continue.
+> **Deployment status:** The infrastructure was deployed and tested for assessment. The RDS database was subsequently deleted as part of cost cleanup. The resource settings below describe the tested deployment, not currently running services.
 
 ## Repository structure
 
@@ -51,11 +62,12 @@ EcoCart-Storage-Database/
 │   └── verify_s3.py
 ├── docs/
 │   ├── EcoCart-M3-Architecture.png
-│   └── evidence/               # Deployment and validation screenshots
+│   ├── evidence/               # Deployment and validation screenshots
+│   └── Storage and Database Solution-M3-Report.docx
 └── README.md
 ```
 
-The final assignment report will also be placed in `docs/` when completed.
+The completed assignment report is available in [`docs/Storage and Database Solution-M3-Report.docx`](docs/Storage%20and%20Database%20Solution-M3-Report.docx).
 
 ## Database design
 
@@ -150,4 +162,15 @@ This assignment demonstrates cloud storage, relational database configuration, p
 
 ## Cost management
 
-AWS resources may incur charges even on accounts with promotional credits. The RDS instance was temporarily stopped after testing. Before the project is considered fully closed, delete unneeded RDS resources and retained snapshots and review S3 objects and billing in the AWS console.
+AWS resources may incur charges even on accounts with promotional credits. Following successful testing and submission, the RDS database was deleted. Remaining S3 objects, retained snapshots or backups, and billing should be reviewed and cleaned up as appropriate.
+
+## Project references
+
+- **Repository:** https://github.com/mdhabibhameedi/ecocart-storage-database-solution
+- **Architecture:** [View diagram](docs/EcoCart-M3-Architecture.png)
+- **Submitted report:** [Open Word report](docs/Storage%20and%20Database%20Solution-M3-Report.docx)
+- **Implementation evidence:** [Browse screenshots](docs/evidence/)
+- **SQL schema:** [View schema](database/schema.sql)
+- **Python scripts:** [Browse scripts](scripts/)
+
+> **Note:** The architecture diagram must be uploaded to `docs/EcoCart-M3-Architecture.png` for the embedded preview to render. Links assume the corresponding files are present in the repository.
