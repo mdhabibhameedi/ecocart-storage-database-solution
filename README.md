@@ -1,120 +1,79 @@
-# EcoCart — Storage and Database Solution
+# EcoCart — Storage and Database Solution on AWS
 
-**Cloud Computing | Modular Assignment 3**  
-**AWS Region:** Europe (Stockholm), `eu-north-1`
+**Modular Assignment 3 | Cloud Computing**  
+**Author:** Md Habib Ahmed  
+**AWS Region:** Europe (Stockholm), `eu-north-1`  
+**Status:** Completed academic demonstration. The RDS database was subsequently deleted as part of cost cleanup; this repository preserves the implementation files and evidence. **There is no live database endpoint.**
 
-## Quick links
+EcoCart demonstrates cloud object storage and a relational database for a sample e-commerce product catalogue. **Amazon RDS for MySQL** stored structured product and customer records, while **Amazon S3** held product images and text descriptions. Python scripts were used to generate sample data, import CSV records into MySQL, and verify S3 objects using `boto3`.
 
-- [Architecture diagram](docs/EcoCart-M3-Architecture.png)
-- [Final assignment report](docs/Storage%20and%20Database%20Solution-M3-Report.docx)
-- [Evidence screenshots](docs/evidence/)
-- [Database schema](database/schema.sql)
-- [Python scripts](scripts/)
-- [Source datasets](data/)
-
-## Project overview
-
-EcoCart is a cloud storage and relational database demonstration for an e-commerce product catalog. It uses **Amazon RDS for MySQL** to store structured product and customer records and **Amazon S3** to store product images and text descriptions. Python scripts demonstrate database ingestion and S3 object retrieval.
-
-The deployment was created for academic assessment. It is not a production e-commerce application.
+**This is an academic infrastructure demonstration, not a deployed online store.** The AWS resources were configured and tested through the AWS Console and Python tools; the repository contains source files, sample datasets, architecture, evidence, and the assignment report.
 
 ## Architecture
 
-[![EcoCart storage and database architecture](docs/EcoCart-M3-Architecture.png)](docs/EcoCart-M3-Architecture.png)
+![EcoCart AWS storage and database architecture](docs/EcoCart-M3-Architecture.png)
 
-[Open the full-size architecture diagram](docs/EcoCart-M3-Architecture.png)
+[View the full-resolution architecture diagram](docs/EcoCart-M3-Architecture.png)
 
-The Python scripts access the RDS database through a TLS-encrypted MySQL connection using database credentials. A separate Python script uses **boto3** with AWS credentials available in AWS CloudShell to list and read objects in S3. The `products` table stores S3 object keys that associate each product with its image and description; RDS does not connect directly to S3.
+The architecture shows a Python client connecting separately to **RDS MySQL over TLS (port 3306)** and **S3 over HTTPS using boto3**. RDS runs within a VPC; S3 is a regional AWS service outside the VPC. Product records contain S3 object keys, but the database does not directly connect to the bucket. The MySQL connection uses database credentials; S3 requests use AWS credentials available in the execution environment.
 
-## AWS resources
+## Project contents
 
-| Resource | Configuration |
-| --- | --- |
-| Region | Europe (Stockholm), `eu-north-1` |
-| Amazon RDS | MySQL 8.4, instance `ecocart-m3-mysql` |
+| Location | Purpose |
+|---|---|
+| [`data/products.csv`](data/products.csv) | Sample catalogue records for 10 products |
+| [`data/customers.csv`](data/customers.csv) | Sample records for 10 fictional customers |
+| [`data/images/`](data/images/) | 10 generated product images (`P001.png`–`P010.png`) |
+| [`data/descriptions/`](data/descriptions/) | 10 product text descriptions (`P001.txt`–`P010.txt`) |
+| [`database/schema.sql`](database/schema.sql) | MySQL schema for the `products` and `customers` tables |
+| [`database/rds-ca-bundle.pem`](database/rds-ca-bundle.pem) | RDS CA certificate bundle used for TLS verification |
+| [`scripts/generate_datasets.py`](scripts/generate_datasets.py) | Generate sample CSV datasets |
+| [`scripts/generate_descriptions.py`](scripts/generate_descriptions.py) | Generate product descriptions |
+| [`scripts/generate_images.py`](scripts/generate_images.py) | Generate product images |
+| [`scripts/import_to_rds.py`](scripts/import_to_rds.py) | Import CSV records into RDS MySQL using PyMySQL |
+| [`scripts/verify_s3.py`](scripts/verify_s3.py) | Verify and retrieve S3 objects using boto3 |
+| [`docs/EcoCart-M3-Architecture.png`](docs/EcoCart-M3-Architecture.png) | AWS architecture diagram shown above |
+| [`docs/evidence/`](docs/evidence/) | AWS deployment, validation, security, and backup screenshots |
+| [`docs/Storage and Database Solution-M3-Report.docx`](docs/Storage%20and%20Database%20Solution-M3-Report.docx) | Final submitted Modular Assignment 3 report |
+
+## AWS configuration
+
+| Component | Implemented configuration |
+|---|---|
+| Region | `eu-north-1` — Europe (Stockholm) |
+| Amazon RDS | MySQL 8.4; instance `ecocart-m3-mysql` |
 | Database | `ecocart_db` |
-| Database tables | `products` (10 records), `customers` (10 records) |
+| Tables | `products` and `customers`, 10 records each |
+| RDS access | MySQL port 3306 restricted to an authorized client IP by a security group |
+| Transport security | TLS connection validated using the AWS RDS CA bundle |
+| RDS backups | Automated backups enabled, 1-day retention; snapshot availability verified |
 | Amazon S3 | Bucket `ecocart-m3-assets-habib` |
-| S3 objects | 10 PNG images under `images/` and 10 TXT descriptions under `descriptions/` |
-| RDS network access | Security group limited MySQL port 3306 to an authorized client IP during testing |
-| RDS backup | Automated backups enabled; 1-day retention; automated snapshot verified |
-| S3 protection | Block public access enabled; default SSE-S3 encryption |
+| S3 object layout | `images/` (10 PNG) and `descriptions/` (10 TXT) |
+| S3 security | Block Public Access; default SSE-S3 encryption |
 
-> **Deployment status:** The infrastructure was deployed and tested for assessment. The RDS database was subsequently deleted as part of cost cleanup. The resource settings below describe the tested deployment, not currently running services.
-
-## Repository structure
-
-```text
-EcoCart-Storage-Database/
-├── data/
-│   ├── products.csv
-│   ├── customers.csv
-│   ├── images/                 # P001.png–P010.png
-│   └── descriptions/           # P001.txt–P010.txt
-├── database/
-│   ├── schema.sql
-│   └── rds-ca-bundle.pem       # AWS RDS CA certificate bundle
-├── scripts/
-│   ├── generate_datasets.py
-│   ├── generate_descriptions.py
-│   ├── generate_images.py
-│   ├── import_to_rds.py
-│   └── verify_s3.py
-├── docs/
-│   ├── EcoCart-M3-Architecture.png
-│   ├── evidence/               # Deployment and validation screenshots
-│   └── Storage and Database Solution-M3-Report.docx
-└── README.md
-```
-
-The completed assignment report is available in [`docs/Storage and Database Solution-M3-Report.docx`](docs/Storage%20and%20Database%20Solution-M3-Report.docx).
+These settings describe the **tested deployment**, not resources guaranteed to remain active today.
 
 ## Database design
 
-The schema is defined in [`database/schema.sql`](database/schema.sql).
+The SQL schema is available at [`database/schema.sql`](database/schema.sql).
 
-**`products`**
+- **`products`:** `product_id` (primary key), `name`, `category`, `price`, `stock`, `image_s3_key`, `description_s3_key`.
+- **`customers`:** `customer_id` (primary key), `name`, `email` (unique), `city`.
 
-| Column | Type | Purpose |
-| --- | --- | --- |
-| `product_id` | `VARCHAR(10)` | Primary key |
-| `name` | `VARCHAR(150)` | Product name |
-| `category` | `VARCHAR(100)` | Product category |
-| `price` | `DECIMAL(10,2)` | Nonnegative price |
-| `stock` | `INT` | Nonnegative stock quantity |
-| `image_s3_key` | `VARCHAR(255)` | Associated image object key |
-| `description_s3_key` | `VARCHAR(255)` | Associated description object key |
+The schema uses constraints for nonnegative prices and stock quantities. Customer data is fictional. The image and description columns store **S3 object keys**, rather than image binaries or description documents in MySQL.
 
-**`customers`**
+## Python integration and verification
 
-| Column | Type | Purpose |
-| --- | --- | --- |
-| `customer_id` | `VARCHAR(10)` | Primary key |
-| `name` | `VARCHAR(150)` | Customer name |
-| `email` | `VARCHAR(255)` | Unique email |
-| `city` | `VARCHAR(100)` | Customer city |
+### 1. Import CSV data into RDS
 
-The customer records are fictional test data using example email addresses.
-
-## Python integration
-
-### Import CSV data into RDS
-
-Install the MySQL client library:
+The [`import_to_rds.py`](scripts/import_to_rds.py) script uses **PyMySQL** and a TLS-verified connection. It prompts for the endpoint and database credentials rather than hardcoding secrets. It supports reruns through upsert statements.
 
 ```bash
 python -m pip install pymysql
-```
-
-While the RDS instance is running and its security group allows your current IP, run:
-
-```bash
 python scripts/import_to_rds.py
 ```
 
-The script prompts for the RDS endpoint, MySQL username, and password; credentials are **not hardcoded**. The connection uses the AWS RDS CA certificate bundle for TLS verification. The import can be rerun without duplicating records because it uses upsert statements.
-
-**Observed result:**
+**Recorded output:**
 
 ```text
 Products in RDS: 10
@@ -122,55 +81,54 @@ Customers in RDS: 10
 CSV import completed successfully.
 ```
 
-### Verify S3 objects with boto3
+The RDS instance has been deleted, so these commands are provided for documentation only; running them again would require a new database and appropriate network access.
 
-Run the S3 verification script in an environment with configured AWS credentials, such as AWS CloudShell:
+### 2. Verify S3 objects
+
+The [`verify_s3.py`](scripts/verify_s3.py) script uses **boto3** to list objects and retrieve `descriptions/P001.txt`. It was tested in AWS CloudShell with configured AWS credentials.
 
 ```bash
 python3 -m pip install boto3
 python3 scripts/verify_s3.py
 ```
 
-The script lists image and description objects, retrieves `descriptions/P001.txt`, and validates that there are 10 PNG files and 10 TXT files. The S3 integration was successfully tested in AWS CloudShell. To run the repository script in CloudShell, first make the file available there.
+**Recorded result:** 10 PNG product images and 10 TXT descriptions verified; a sample text object was retrieved successfully. The script must be made available in CloudShell before it can be run there.
 
-## Security and backup controls
+## Validation results
 
-- **RDS:** MySQL access restricted by a security group to the authorized client IP on port 3306 during testing; TLS encryption with the AWS RDS CA bundle.
-- **S3:** Public access blocked; objects private; SSE-S3 default encryption enabled.
-- **Database constraints:** Primary keys, unique customer emails, and nonnegative price and stock checks.
-- **Recovery:** RDS automated backups enabled with a one-day retention period; an available automated snapshot was verified in the AWS console.
-- **Credentials:** Passwords and AWS access keys are not stored in project scripts or documentation.
+| Test | Recorded result |
+|---|---|
+| RDS MySQL deployment and schema creation | Passed |
+| Import product CSV data | Passed — 10 records |
+| Import customer CSV data | Passed — 10 records |
+| Verify database row counts | Passed — 10 records in each table |
+| Verify S3 product images | Passed — 10 PNG objects |
+| Verify S3 descriptions | Passed — 10 TXT objects |
+| Retrieve sample S3 description using boto3 | Passed |
+| Confirm RDS automated backup settings | Verified — 1-day retention and available snapshot |
 
-## Validation and evidence
+[View AWS screenshots and validation evidence](docs/evidence/)
 
-| Test | Result |
-| --- | --- |
-| RDS MySQL database and schema creation | Passed |
-| Import products from CSV | Passed — 10 records |
-| Import customers from CSV | Passed — 10 records |
-| RDS SQL count verification | Passed — 10 records per table |
-| S3 image object listing | Passed — 10 PNG files |
-| S3 description object listing | Passed — 10 TXT files |
-| S3 description retrieval using boto3 | Passed |
-| RDS automated backup configuration | Verified — enabled, 1 day |
+## Security, backup, and limitations
 
-Evidence screenshots are retained in [`docs/evidence/`](docs/evidence/), including database deployment, S3 object organization, data verification, and backup configuration.
+- **Database network security:** RDS MySQL access was restricted to the authorized client IP for testing, rather than open to the entire internet.
+- **Encryption in transit:** The Python MySQL connection used TLS with certificate verification.
+- **S3 protection:** Public access was blocked, with default SSE-S3 encryption enabled.
+- **Backup configuration:** RDS automated backups and a snapshot were verified; an actual database restore was **not** demonstrated.
+- **Scope:** RDS and S3 were tested through **separate Python workflows**. No hosted storefront, production API, multi-AZ deployment, or single end-to-end transaction spanning both services was implemented.
+- **Credentials:** No database passwords or AWS access keys are intentionally included in this repository.
 
-## Scope and limitations
+## Assignment evidence and documentation
 
-This assignment demonstrates cloud storage, relational database configuration, programmatic data access, and security/backup settings. It does **not** implement a hosted web storefront, a production API, a multi-AZ RDS deployment, or an automated application-level end-to-end transaction spanning RDS and S3. RDS and S3 access were validated with separate Python workflows.
+- [Final Modular Assignment 3 report (DOCX)](docs/Storage%20and%20Database%20Solution-M3-Report.docx)
+- [EcoCart AWS architecture diagram](docs/EcoCart-M3-Architecture.png)
+- [AWS evidence screenshots](docs/evidence/)
+- [MySQL schema](database/schema.sql)
+- [Python implementation scripts](scripts/)
+- [Sample product and customer datasets](data/)
 
-## Cost management
+## Cost management and project status
 
-AWS resources may incur charges even on accounts with promotional credits. Following successful testing and submission, the RDS database was deleted. Remaining S3 objects, retained snapshots or backups, and billing should be reviewed and cleaned up as appropriate.
+After the assignment demonstration, the **RDS database was deleted** to prevent further instance usage charges. Remaining S3 objects, retained backups or snapshots (if any), and other AWS resources should be reviewed and removed when no longer needed. AWS billing data may take time to update.
 
-## Project references
-
-- **Repository:** https://github.com/mdhabibhameedi/ecocart-storage-database-solution
-- **Architecture:** [View diagram](docs/EcoCart-M3-Architecture.png)
-- **Submitted report:** [Open Word report](docs/Storage%20and%20Database%20Solution-M3-Report.docx)
-- **Implementation evidence:** [Browse screenshots](docs/evidence/)
-- **SQL schema:** [View schema](database/schema.sql)
-- **Python scripts:** [Browse scripts](scripts/)
-
-> **Note:** The architecture diagram must be uploaded to `docs/EcoCart-M3-Architecture.png` for the embedded preview to render. Links assume the corresponding files are present in the repository.
+This repository is retained as a record of the completed educational assignment. It does **not** provide a live AWS service or production application.
