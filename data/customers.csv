@@ -1,0 +1,11 @@
+customer_id,name,email,city
+C001,Aisha Khan,aisha@example.com,Riyadh
+C002,Omar Ali,omar@example.com,Jeddah
+C003,Sara Ahmed,sara@example.com,Dammam
+C004,Zaid Hassan,zaid@example.com,Riyadh
+C005,Mariam Noor,mariam@example.com,Mecca
+C006,Bilal Farooq,bilal@example.com,Medina
+C007,Huda Saleh,huda@example.com,Jeddah
+C008,Yusuf Malik,yusuf@example.com,Riyadh
+C009,Fatima Rahman,fatima@example.com,Abha
+C010,Hamza Ibrahim,hamza@example.com,Taif

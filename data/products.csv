@@ -1,0 +1,11 @@
+product_id,name,category,price,stock,image_s3_key,description_s3_key
+P001,Wireless Mouse,Electronics,24.99,120,images/P001.png,descriptions/P001.txt
+P002,Mechanical Keyboard,Electronics,79.99,65,images/P002.png,descriptions/P002.txt
+P003,USB-C Hub,Electronics,39.50,90,images/P003.png,descriptions/P003.txt
+P004,27-inch Monitor,Electronics,189.99,35,images/P004.png,descriptions/P004.txt
+P005,Laptop Stand,Accessories,32.00,75,images/P005.png,descriptions/P005.txt
+P006,Reusable Water Bottle,Lifestyle,18.50,200,images/P006.png,descriptions/P006.txt
+P007,Wireless Earphones,Electronics,49.99,85,images/P007.png,descriptions/P007.txt
+P008,Eco-Friendly Backpack,Bags,49.99,55,images/P008.png,descriptions/P008.txt
+P009,Solar Power Bank,Electronics,44.99,60,images/P009.png,descriptions/P009.txt
+P010,LED Desk Lamp,Home Office,35.00,80,images/P010.png,descriptions/P010.txt
